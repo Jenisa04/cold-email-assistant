@@ -1,0 +1,9 @@
+{
+  "manifest_version": 1,
+  "version": "1.0",
+  "name": "Cold Email Assistant",
+  "permissions": ["storage", "identity", "identity.email", "scripting"],
+  "action": {
+    "default_popup": "index.html"
+  }
+}
