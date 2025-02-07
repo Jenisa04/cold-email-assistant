@@ -9,22 +9,16 @@
   <body>
     <h3>Send Cold Email</h3>
 
-    <label>Receiver's Name:</label>
-    <input type="text" , id="receivername" , placeholder="Enter name" />
-
-    <label>Receiver's Email ID:</label>
-    <input type="email" , id="receiveremail" , placeholder="Enter email id" />
-
-    <label>Subject:</label>
-    <input type="text" , id="Subject" , placeholder="Enter subject" />
-
-    <label>Choose Email Template:</label>
-    <select id="emailtemplate"></select>
-    <button id="sendemail">Send Email</button>
+    <ul id="templatelist"></ul>
 
     <h3>Add New Template</h3>
 
     <textarea id="newtemplate" placeholder="Enter template"></textarea>
     <button id="savetemplate">Save Template</button>
+
+    <button id="logout">Logout</button>
+
+    <script src="firebase-config.js"></script>
+    <script src="popup.js"></script>
   </body>
 </html>

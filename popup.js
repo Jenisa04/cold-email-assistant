@@ -1,46 +1,47 @@
-document.addEventListener('DOMContentLoaded', async function () {
-  const templateDropdown = document.getElementById('emailtemplate');
-  const sendButton = document.getElementById('sendtmail');
-  const saveTemplateButton = document.getElementById('savetemplate');
+document.addEventListener('DOMContentLoaded', function () {
+  auth.onAuthStateChanged((user) => {
+    if (!user) {
+      window.location.href = 'login.html'; // Redirect if not logged in
+    } else {
+      loadTemplates(user.uid);
+    }
+  });
 
-  // Load saved templates
-  async function loadTemplates() {
-    templateDropdown.innerHTML = '';
-    const templatesSnapshot = await db.collection('templates').get();
+  async function loadTemplates(userId) {
+    const templateList = document.getElementById('templatelist');
+    templateList.innerHTML = '';
+
+    const templatesSnapshot = await db
+      .collection('templates')
+      .where('userId', '==', userId)
+      .get();
     templatesSnapshot.forEach((doc) => {
-      const option = document.createElement('option');
-      option.value = doc.data().content;
-      option.textContent = doc.data().content.substring(0, 20) + '...';
-      templateDropdown.appendChild(option);
+      const li = document.createElement('li');
+      li.textContent = doc.data().content.substring(0, 50) + '...'; // Show preview
+      templateList.appendChild(li);
     });
   }
 
-  saveTemplateButton.addEventListener('click', async () => {
-    const newTemplate = document.getElementById('newtemplate').value;
-    if (newTemplate.trim()) {
-      await db.collection('templates').add({ content: newTemplate });
-      alert('Template saved!');
-      loadTemplates();
-    }
+  document
+    .getElementById('savetemplate')
+    .addEventListener('click', async () => {
+      const user = auth.currentUser;
+      if (!user) return;
+
+      const newTemplate = document.getElementById('newtemplate').value.trim();
+      if (newTemplate) {
+        await db
+          .collection('templates')
+          .add({ userId: user.uid, content: newTemplate });
+        alert('Template saved!');
+        loadTemplates(user.uid);
+      }
+    });
+
+  document.getElementById('logout').addEventListener('click', () => {
+    auth.signOut().then(() => {
+      localStorage.removeItem('userEmail');
+      window.location.href = 'login.html';
+    });
   });
-
-  sendButton.addEventListener('click', () => {
-    const receiverName = document.getElementById('receivername').value;
-    const receiverEmail = document.getElementById('receiveremail').value;
-    const subject = document.getElementById('emailsubject').value;
-    const template = templateDropdown.value;
-
-    if (receiverEmail && template) {
-      chrome.runtime.sendMessage({
-        action: 'sendemail',
-        email: {
-          to: receiverEmail,
-          subject: subject,
-          body: template.replace('{name}', receiverName),
-        },
-      });
-    }
-  });
-
-  loadTemplates();
 });

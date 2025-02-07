@@ -1,9 +1,10 @@
 {
-  "manifest_version": 1,
+  "manifest_version": 2,
+  "name": "Cold Email Template Saver",
   "version": "1.0",
-  "name": "Cold Email Assistant",
-  "permissions": ["storage", "identity", "identity.email", "scripting"],
-  "action": {
-    "default_popup": "index.html"
-  }
+  "description": "Save your cold email templates easily.",
+  "browser_action": {
+    "default_popup": "popup.html"
+  },
+  "permissions": ["storage", "identity"]
 }
